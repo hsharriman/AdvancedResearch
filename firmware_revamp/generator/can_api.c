@@ -29,7 +29,7 @@ ISR(TIMER0_COMPA_vect) {
         for (int i=0; i<CAN_info_len; i++) {
             can_msg_info* msg = CAN_msg_array[i];
             msg->countdown--;
-            if (msg->countdown <= 0) {
+            if (msg->countdown <= 0) { // time to send the message
                 CAN_transmit(msg->mob, msg->ident, msg->length, msg->raw_arr);
                 msg->countdown = msg->cycle_time;
             }
