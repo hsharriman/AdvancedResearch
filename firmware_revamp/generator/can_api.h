@@ -5,6 +5,7 @@
 #include <inttypes.h>
 #include <avr/interrupt.h>
 #include <stdlib.h>
+#include "shared_defs.h"
 
 /* Message Identifiers */
 #define CAN_ID_GLOBAL            ((uint16_t) 0x00)
@@ -217,26 +218,6 @@
 #define CAN_ERR_UNKNOWN       3
 
 
-/* Struct holding all information necessary to send a CAN message */
-typedef struct can_msg_info {
-    //pointer to raw data array
-    uint8_t *raw_arr;
-    // ticks until message should be sent
-    int countdown;
-    // number of cycles between messages
-    int cycle_time;
-    //mailbox ID for the message
-    uint8_t mob;
-    // message ID
-    uint16_t ident; 
-    //byte length of message
-    uint8_t length;
-};
-
-//Pointer to array of can_message_info structs
-const can_msg_info* CAN_msg_array;
-const int CAN_info_len;
-
 /* Function Prototypes */
 
 // Initialize CAN system based on MODE of operation
@@ -255,4 +236,13 @@ uint8_t CAN_wait_on_receive ( uint8_t mob, uint16_t ident, uint8_t msg_length, u
 uint8_t CAN_read_received ( uint8_t mob, uint8_t msg_length, uint8_t *msg );
 
 
+/* BOARD-SPECIFIC CAN FUNCTIONALITY. THE FOLLOWING CODE IS AUTOMATICALLY GENERATED BASED ON THE MINI-YAML: shutdown.yaml */
+// BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR
+uint8_t* BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR;
+
+
+// Board-specific CAN init function declaration
+can_msg_info* board_CAN_init();
+
 #endif
+

@@ -1,0 +1,25 @@
+#include "{header}_generated.h"
+
+/* RAW ARRAY DEFINITIONS */
+{raw_arrays}
+
+/* MESSAGE STRUCT DEFINITIONS */
+{struct_defs}
+
+/* BOARD-SPECIFIC CAN FUNCTIONALITY. */
+void board_CAN_init() {{
+    // Initialize each struct as empty
+{structs}
+    // Allocate array of structs that will be shared with can_api
+    CAN_msg_array = malloc(sizeof(can_msg_info*) * {NUM_MSGS});
+    CAN_info_len = {NUM_MSGS};
+
+    // Add one struct per TX messsage
+{can_arr}
+
+    // Call can_api init
+    CAN_init(mode);
+}}
+
+/* BOARD-SPECIFIC MESSAGE SETTERS, ONE PER SIGNAL PER TX MESSAGE */
+{setters}

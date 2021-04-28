@@ -192,82 +192,8 @@ void initTimer(void) {
 	OCR0A = 0x27;           //Makes timer run at ~100Hz
 }
 
-// uint8_t CAN_init (uint8_t mode)
-// {
-//     // Software reset; necessary for all CAN
-//     // stuff.
-//     CANGCON = _BV(SWRES);
-
-//     // CAN prescaler timing prescaler set to 0
-//     CANTCON = 0x00;
-
-//     // Set Error passive state
-//     CANGSTA |= _BV(ERRP);
-
-//     // Set BAUD rate
-    
-
-//     // 500 kbps
-//     CANBT1 = 0x00;
-//     CANBT2 = 0x04;
-//     CANBT3 = 0x12;
-    
-//     /* 
-//     // 250 kbps
-//     CANBT1 = 0x00;
-//     CANBT2 = 0x0C;
-//     CANBT3 = 0x36;
-//     */
-
-//     // Allow all interrupts & receive interrupts
-//     CANGIE |= _BV(ENIT) | _BV(ENRX);
-
-//     // compatibility with future chips
-//     CANIE1 = 0;
-
-//     // enable interrupts on all MObs
-//     CANIE2 = ( _BV(IEMOB0) | _BV(IEMOB1) |
-//                _BV(IEMOB2) | _BV(IEMOB3) |
-//                _BV(IEMOB4) | _BV(IEMOB5) );
-
-
-//     // All MObs come arbitrarily set up at first,
-//     // must reset all in order to make them useable
-//     int8_t mob;
-//     for( mob=0; mob<6; mob++ ){
-//         // Selects Message Object 0-5
-//         // This changes the MOb that is selected
-//         CANPAGE = ( mob << 4 );
-
-//         // Disable mob
-//         CANCDMOB = 0x00;
-
-//         // Clear mob status register;
-//         CANSTMOB = 0x00;
-//     }
-
-//     // Set up as Enabled mode
-//     //  instead of standby
-//     //  Necessary in order to get CAN
-//     //  communication
-//     if (mode == CAN_ENABLED)
-//     {
-//         CANGCON |= _BV( ENASTB );
-//     }
-//     else if( mode == CAN_LISTEN )
-//     {
-//         CANGCON |= _BV(LISTEN) | _BV( ENASTB );
-//     }
-
-//     return 0;
-// }
-
-uint8_t CAN_init (uint8_t mode, can_msg_info* can_arr, int can_arr_len)
+uint8_t CAN_init (uint8_t mode)
 {
-    //track the can_arr messages
-    CAN_msg_array = can_arr;
-    CAN_info_len = can_arr_len;
-
     // Software reset; necessary for all CAN
     // stuff.
     CANGCON = _BV(SWRES);
@@ -477,4 +403,29 @@ uint8_t CAN_read_received (uint8_t mob, uint8_t msg_length, uint8_t *msg)
     CANSTMOB = 0x00;
 
     return error_value;
+}
+
+/* BOARD-SPECIFIC CAN FUNCTIONALITY. */
+can_msg_info* board_CAN_init() {
+    can_msg_info* can_info_arr = malloc(sizeof(can_msg_info*) * 1);
+
+    // for each message, fill in a struct entry and add to can_msg_info
+
+    //BRAKELIGHT_BSPD_SHUTDOWN struct initialization
+    BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR = malloc(sizeof(uint8_t) * 8);
+    struct can_msg_info MESSAGE = {
+        .raw_arr = BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR,
+        .countdown = 100, // comes from YAML....
+        .cycle_time = 100, // TODO hmm
+        .mob = 0, // arbitrary
+        .ident = 11.0, // YAML
+        .length = 5.0,  //YAML
+    };
+    can_info_arr[0] = &MESSAGE;
+
+
+    CAN_init(mode, can_info_arr, NUM_MSGS);
+    // know all TX/RX messages that will be sent on this board in advance via yaml. we can use this to GENERATE NAMED ARRAYS
+    // that correspond to the name of each message that will be sent, so it is very simple to set a message.
+    return CAN_info_arr;
 }

@@ -1,0 +1,8 @@
+struct {struct_type} {struct_name};
+######
+    // {struct_name}
+    {struct_name} = {{
+{signals}
+    }};
+######
+        .{signal} = OxFF,

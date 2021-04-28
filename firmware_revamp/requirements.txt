@@ -1,1 +1,2 @@
-cantools==35.5.0
+cantools>=35.5.0
+PyYAML>=5.4.1

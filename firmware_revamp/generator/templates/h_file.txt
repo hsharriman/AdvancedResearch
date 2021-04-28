@@ -1,0 +1,11 @@
+#include "shared_defs.h"
+#include "can_api.h"
+
+/* BOARD-SPECIFIC CAN FUNCTIONALITY. 
+* THE FOLLOWING CODE IS AUTOMATICALLY GENERATED BASED ON THE MINI-YAML: {prefix}.yaml */
+
+// {prefix} CAN init function declaration
+can_msg_info* {prefix}_CAN_init();
+
+// {prefix} CAN setter functions
+{setters}
