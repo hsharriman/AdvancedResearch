@@ -5,7 +5,7 @@
 * THE FOLLOWING CODE IS AUTOMATICALLY GENERATED BASED ON THE MINI-YAML: shutdown.yaml */
 
 // shutdown CAN init function declaration
-can_msg_info* shutdown_CAN_init();
+void shutdown_CAN_init();
 
 // shutdown CAN setter functions
 // Update sig: error_code of msg: brakelight_bspd_shutdown
