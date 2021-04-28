@@ -5,7 +5,7 @@ int set_{msg}_{sig} (uint8_t value) {{
         return 0;
     }}
     // update the struct and the raw array
-    {msg_struct}.error_code = value;
+    {msg_struct}.{sig} = value;
     s = {prefix}_{msg}_pack({msg_raw}, &{msg_struct}, 8);
     return s;
 }};

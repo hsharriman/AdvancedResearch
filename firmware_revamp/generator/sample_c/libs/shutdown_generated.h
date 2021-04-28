@@ -1,8 +1,9 @@
 #include "shared_defs.h"
 #include "can_api.h"
+#include "shutdown.h"
 
 /* BOARD-SPECIFIC CAN FUNCTIONALITY. 
-* THE FOLLOWING CODE IS AUTOMATICALLY GENERATED BASED ON THE MINI-YAML: shutdown.yaml */
+* THE FOLLOWING CODE IS AUTOMATICALLY GENERATED BASED ON THE MINI-YAML: shutdown.yaml. Do not directly edit this file! */
 
 // shutdown CAN init function declaration
 void shutdown_CAN_init();

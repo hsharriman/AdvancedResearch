@@ -25,15 +25,19 @@ ISR(TIMER0_COMPA_vect) {
 
 	if(gClock_prescale > 10) {
 		gFlag |= _BV(UPDATE_STATUS);
-		gClock_prescale = 0;
         for (int i=0; i<CAN_info_len; i++) {
             can_msg_info* msg = CAN_msg_array[i];
-            msg->countdown--;
+            msg->countdown = msg->countdown - gClock_prescale;
             if (msg->countdown <= 0) { // time to send the message
                 CAN_transmit(msg->mob, msg->ident, msg->length, msg->raw_arr);
                 msg->countdown = msg->cycle_time;
+                for (int i=0; i<8; i++) {
+                    printf("%d, ", msg->raw_arr[i]);
+                }
+                printf(" sent\n")
             }
         }
+        gClock_prescale = 0;
 	}
 	gClock_prescale++;
 }

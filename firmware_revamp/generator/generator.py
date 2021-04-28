@@ -1,4 +1,5 @@
 import cantools
+import os
 import yaml
 import subprocess
 from pathlib import Path
@@ -13,16 +14,21 @@ class Utils:
     def __init__(self, file_name):
         self.name = file_name
 
-    def edit_file(self, file_body):
+    def generate(self, msgs):
+        #child classes override this
+        return ""
+
+    def edit_file(self, msgs):
         #open the file or create it if it doesn't exist already
-        f = Path(self.name)
-        f.touch(exist_ok=True) 
-        with open(self.name, "r") as f:
+        save_path = os.path.join("./out", self.name)
+        f = Path(save_path)
+        f.touch(exist_ok=True)
+        with open(save_path, "r") as f:
             c_file = f.read()
 
         #update the file with the new body
-        with open(self.name, "w") as f:
-            f.write(file_body)
+        with open(save_path, "w") as f:
+            f.write(self.generate(msgs))
         print(f"updated {self.name}")
 
     def read_template(self, file):
@@ -143,35 +149,35 @@ class CGenerator(Utils):
         )
         return func_body
 
-def main(dbc_file, yaml_file):
+def main(file_prefix):
     """
     TODO
     """
     #load the cantools file
-    db = cantools.database.load_file(f'../dbc/{dbc_file}.dbc')
-    out = subprocess.run(['cantools', 'generate_c_source', '--no-floating-point-numbers', f'../dbc/{dbc_file}.dbc'])
+    dbc_path = f'../dbc/{file_prefix}.dbc'
+    db = cantools.database.load_file(dbc_path)
+    out = subprocess.run(['cantools', 'generate_c_source', '--no-floating-point-numbers', dbc_path])
 
     #open the yaml file
-    #generate the add-on with the init function and the pre-defined pointers
-    with open(f"../mini_yamls/{yaml_file}", 'r') as f:
+    with open(f"../mini_yamls/{file_prefix}.yaml", 'r') as f:
         data = yaml.load(f, yaml.FullLoader)
 
+    #TODO move generated files to ./out folder
+    Path("./out").mkdir(exist_ok=True)
+    os.replace(f"{file_prefix}.c", f"./out/{file_prefix}.c")
+    os.replace(f"{file_prefix}.h", f"./out/{file_prefix}.h")
+    
     msgs = data["MessagesTX"]
     if NUM_MSGS(msgs) > 6:
         print("this mini YAML has more than the maximum 6 messages.")
         return
 
-    yaml_file = yaml_file.strip(".yaml")
-    c_gen = CGenerator(yaml_file)
-    header = HeaderGenerator(yaml_file)
-    #append the new additions to the header/C files that we just generated 
+    c_gen = CGenerator(file_prefix)
+    c_gen.edit_file(msgs)
 
-    init_func = c_gen.generate(msgs)
-    c_gen.edit_file(init_func)
-
-    header_body = header.generate(msgs)
-    header.edit_file(header_body)
+    header = HeaderGenerator(file_prefix)
+    header.edit_file(msgs)
 
 
 if __name__ == "__main__":
-    main("test", "shutdown.yaml")   #these should eventually be named the same thing
+    main("shutdown")   #these should eventually be named the same thing
