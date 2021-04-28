@@ -1,4 +1,4 @@
-#include "{header}_generated.h"
+#include "{prefix}_generated.h"
 
 /* RAW ARRAY DEFINITIONS */
 {raw_arrays}
@@ -7,7 +7,7 @@
 {struct_defs}
 
 /* BOARD-SPECIFIC CAN FUNCTIONALITY. */
-void board_CAN_init() {{
+void {prefix}_CAN_init() {{
     // Initialize each struct as empty
 {structs}
     // Allocate array of structs that will be shared with can_api

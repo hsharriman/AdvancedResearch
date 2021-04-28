@@ -133,7 +133,7 @@ class CGenerator(Utils):
         #generate a str array of the outgoing message names in C as well. Use this to fill in the RAW_ARR once each has been malloc'd..
         struct_definition, struct_init = self._generate_structs(msgs)
         func_body = self.read_template("./templates/c_file.txt").format(
-            header=self.prefix, 
+            prefix=self.prefix, 
             can_arr=self._generate_can_arr(msgs),
             structs=struct_init, 
             struct_defs=struct_definition,

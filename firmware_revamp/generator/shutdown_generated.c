@@ -9,7 +9,7 @@ struct shutdown_brakelight_bspd_shutdown_t BRAKELIGHT_BSPD_SHUTDOWN_MSG;
 
 
 /* BOARD-SPECIFIC CAN FUNCTIONALITY. */
-void board_CAN_init() {
+void shutdown_CAN_init() {
     // Initialize each struct as empty
     // BRAKELIGHT_BSPD_SHUTDOWN_MSG
     BRAKELIGHT_BSPD_SHUTDOWN_MSG = {
