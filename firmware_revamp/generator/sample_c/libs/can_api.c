@@ -1,21 +1,13 @@
 #include "can_api.h"
 
-//TIMER STUFF
 /*----- Interrupt(s) -----*/
 // *pg 76 of datasheet*
+#define UPDATE_STATUS                      0
+// Timer counters
+uint8_t gTimerFlag = 0x00;
+// uint8_t gClock_prescale = 0x00;  // Used for update timer
 
-// ISR(TIMER0_COMPA_vect) {
-// 	// Only send CAN msgs every 20 cycles
-// 	// Timer Counter0 compare match A
-//  gTimerFlag |= _BV(UPDATE_STATUS);
-//  }
 
-// 	if(gClock_prescale > 10) {
-// 		gFlag |= _BV(UPDATE_STATUS);
-// 		gClock_prescale = 0;
-// 	}
-// 	gClock_prescale++;
-// }
 
 ISR(TIMER0_COMPA_vect) {
 	// Only send CAN msgs every 20 cycles
@@ -23,42 +15,38 @@ ISR(TIMER0_COMPA_vect) {
  gTimerFlag |= _BV(UPDATE_STATUS);
  }
 
-	if(gClock_prescale > 10) {
-		gFlag |= _BV(UPDATE_STATUS);
-        for (int i=0; i<CAN_info_len; i++) {
-            can_msg_info* msg = CAN_msg_array[i];
-            msg->countdown = msg->countdown - gClock_prescale;
-            if (msg->countdown <= 0) { // time to send the message
-                CAN_transmit(msg->mob, msg->ident, msg->length, msg->raw_arr);
-                msg->countdown = msg->cycle_time;
-                for (int i=0; i<8; i++) {
-                    printf("%d, ", msg->raw_arr[i]);
-                }
-                printf(" sent\n")
+    for (int i=0; i<CAN_info_len; i++) {
+        can_msg_info* msg = CAN_msg_array[i];
+        msg->countdown = msg->countdown - gClock_prescale;
+        if (msg->countdown <= 0) { // time to send the message
+            CAN_transmit(msg->mob, msg->ident, msg->length, msg->raw_arr);
+            msg->countdown = msg->cycle_time;
+            for (int i=0; i<8; i++) {
+                printf("%d, ", msg->raw_arr[i]);
             }
+            printf(" sent\n");
         }
-        gClock_prescale = 0;
-	}
-	gClock_prescale++;
+    }
 }
 
 
-//Should be making use of generated code
+//Should be making use of generated code, be defined in the generated file, not can_api
 ISR(CAN_INT_vect) { //pin inturpt vector //notification from the CAN
 
 /*----- Brake Light Mailbox -----*/
+    // TODO in init function, need to set macros
 	CANPAGE = (BRAKE_LIGHT_MBOX << MOBNB0); //1st mailbox from a certain person/board ... This is all your people on imessage
 	if(bit_is_set(CANSTMOB, RXOK)) { //is there something in the mail box to be read
 		//different letters
-		can_recv_msg[0] = CANMSG;   // PANIC PANIC
-		can_recv_msg[1] = CANMSG;   // brake analog voltage MSB       // subjectlines of the letter, have to read the letters in order
-		can_recv_msg[2] = CANMSG;   // brake analog voltage LSB
-		can_recv_msg[3] = CANMSG;   // is brake pressed? CF
-		can_recv_msg[4] = CANMSG;   // BSPD sense
-		can_recv_msg[5] = CANMSG;   // TSMS sense
-		can_recv_msg[6] = CANMSG;   // left e-stop sense
-		can_recv_msg[7] = CANMSG;   // GLVMS sense
-
+		// can_recv_msg[0] = CANMSG;   // PANIC PANIC
+		// can_recv_msg[1] = CANMSG;   // brake analog voltage MSB       // subjectlines of the letter, have to read the letters in order
+		// can_recv_msg[2] = CANMSG;   // brake analog voltage LSB
+		// can_recv_msg[3] = CANMSG;   // is brake pressed? CF
+		// can_recv_msg[4] = CANMSG;   // BSPD sense
+		// can_recv_msg[5] = CANMSG;   // TSMS sense
+		// can_recv_msg[6] = CANMSG;   // left e-stop sense
+		// can_recv_msg[7] = CANMSG;   // GLVMS sense
+        // TODO unpack the message using generated code, this should all go in the generated file not can_api
 
 		if(can_recv_msg[3] == 0xFF) { //if the specific letter says something
 			gFlag |= _BV(BRAKE_PRESSED);           //trip flag // scribbling on your hand
@@ -185,8 +173,6 @@ ISR(CAN_INT_vect) { //pin inturpt vector //notification from the CAN
 
 
 }
-
-
 
 /*----- Functions -----*/
 void initTimer(void) {
@@ -407,29 +393,4 @@ uint8_t CAN_read_received (uint8_t mob, uint8_t msg_length, uint8_t *msg)
     CANSTMOB = 0x00;
 
     return error_value;
-}
-
-/* BOARD-SPECIFIC CAN FUNCTIONALITY. */
-can_msg_info* board_CAN_init() {
-    can_msg_info* can_info_arr = malloc(sizeof(can_msg_info*) * 1);
-
-    // for each message, fill in a struct entry and add to can_msg_info
-
-    //BRAKELIGHT_BSPD_SHUTDOWN struct initialization
-    BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR = malloc(sizeof(uint8_t) * 8);
-    struct can_msg_info MESSAGE = {
-        .raw_arr = BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR,
-        .countdown = 100, // comes from YAML....
-        .cycle_time = 100, // TODO hmm
-        .mob = 0, // arbitrary
-        .ident = 11.0, // YAML
-        .length = 5.0,  //YAML
-    };
-    can_info_arr[0] = &MESSAGE;
-
-
-    CAN_init(mode, can_info_arr, NUM_MSGS);
-    // know all TX/RX messages that will be sent on this board in advance via yaml. we can use this to GENERATE NAMED ARRAYS
-    // that correspond to the name of each message that will be sent, so it is very simple to set a message.
-    return CAN_info_arr;
 }

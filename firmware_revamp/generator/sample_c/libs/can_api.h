@@ -235,14 +235,8 @@ uint8_t CAN_wait_on_receive ( uint8_t mob, uint16_t ident, uint8_t msg_length, u
 // Read a message that has been received
 uint8_t CAN_read_received ( uint8_t mob, uint8_t msg_length, uint8_t *msg );
 
-
-/* BOARD-SPECIFIC CAN FUNCTIONALITY. THE FOLLOWING CODE IS AUTOMATICALLY GENERATED BASED ON THE MINI-YAML: shutdown.yaml */
-// BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR
-uint8_t* BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR;
-
-
-// Board-specific CAN init function declaration
-can_msg_info* board_CAN_init();
+// set up prescaler timer
+void initTimer();
 
 #endif
 

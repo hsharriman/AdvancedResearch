@@ -162,7 +162,7 @@ def main(file_prefix):
     with open(f"../mini_yamls/{file_prefix}.yaml", 'r') as f:
         data = yaml.load(f, yaml.FullLoader)
 
-    #TODO move generated files to ./out folder
+    # move generated files to ./out folder
     Path("./out").mkdir(exist_ok=True)
     os.replace(f"{file_prefix}.c", f"./out/{file_prefix}.c")
     os.replace(f"{file_prefix}.h", f"./out/{file_prefix}.h")

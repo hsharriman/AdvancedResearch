@@ -19,6 +19,8 @@ void {prefix}_CAN_init() {{
 
     // Call can_api init
     CAN_init(mode);
+
+    initTimer();
 }}
 
 /* BOARD-SPECIFIC MESSAGE SETTERS, ONE PER SIGNAL PER TX MESSAGE */
