@@ -34,10 +34,9 @@ ISR(TIMER0_COMPA_vect) {
 ISR(CAN_INT_vect) { //pin inturpt vector //notification from the CAN
 
 /*----- Brake Light Mailbox -----*/
-    // TODO in init function, need to set macros
+    // TODO in init function, need to set macros... should these be constant or could they hypothetically between restarts?
 	CANPAGE = (BRAKE_LIGHT_MBOX << MOBNB0); //1st mailbox from a certain person/board ... This is all your people on imessage
-	if(bit_is_set(CANSTMOB, RXOK)) { //is there something in the mail box to be read
-		//different letters
+	if(bit_is_set(CANSTMOB, RXOK)) {
 		// can_recv_msg[0] = CANMSG;   // PANIC PANIC
 		// can_recv_msg[1] = CANMSG;   // brake analog voltage MSB       // subjectlines of the letter, have to read the letters in order
 		// can_recv_msg[2] = CANMSG;   // brake analog voltage LSB

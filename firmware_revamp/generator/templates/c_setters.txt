@@ -6,6 +6,5 @@ int set_{msg}_{sig} (uint8_t value) {{
     }}
     // update the struct and the raw array
     {msg_struct}.{sig} = value;
-    s = {prefix}_{msg}_pack({msg_raw}, &{msg_struct}, 8);
-    return s;
+    return {prefix}_{msg}_pack({msg_raw}, &{msg_struct}, 8);
 }};
