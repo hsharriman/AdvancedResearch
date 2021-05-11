@@ -5,24 +5,21 @@ uint8_t* BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR;
 
 
 /* MESSAGE STRUCT DEFINITIONS */
-struct shutdown_brakelight_bspd_shutdown_t BRAKELIGHT_BSPD_SHUTDOWN_MSG;
+// BRAKELIGHT_BSPD_SHUTDOWN_MSG
+struct shutdown_brakelight_bspd_shutdown_t BRAKELIGHT_BSPD_SHUTDOWN_MSG = {
+    .error_code = 0x00,
+    .brake_analog_voltage_msb = 0x00,
+    .brake_analog_voltage_lsb = 0x00,
+    .brake_gate = 0x00,
+    .bspdsense = 0x00,
+
+};
 
 
 /* BOARD-SPECIFIC CAN FUNCTIONALITY. */
 void shutdown_CAN_init() {
-    // Initialize each struct as empty
-    // BRAKELIGHT_BSPD_SHUTDOWN_MSG
-    BRAKELIGHT_BSPD_SHUTDOWN_MSG = {
-        .error_code = OxFF,
-        .brake_analog_voltage_msb = OxFF,
-        .brake_analog_voltage_lsb = OxFF,
-        .brake_gate = OxFF,
-        .bspdsense = OxFF,
-
-    };
-
     // Allocate array of structs that will be shared with can_api
-    CAN_msg_array = malloc(sizeof(can_msg_info*) * 1);
+    CAN_msg_array = malloc(sizeof(msg_info*) * 1);
     CAN_info_len = 1;
 
     // Add one struct per TX messsage
@@ -36,11 +33,13 @@ void shutdown_CAN_init() {
         .ident = 11.0,
         .length = 5.0,
     };
-    can_info_arr[0] = &MESSAGE;
+    CAN_msg_array[0] = &MESSAGE;
 
 
     // Call can_api init
-    CAN_init(mode);
+    CAN_init(0);
+
+    initTimer();
 }
 
 /* BOARD-SPECIFIC MESSAGE SETTERS, ONE PER SIGNAL PER TX MESSAGE */
@@ -52,8 +51,7 @@ int set_brakelight_bspd_shutdown_error_code (uint8_t value) {
     }
     // update the struct and the raw array
     BRAKELIGHT_BSPD_SHUTDOWN_MSG.error_code = value;
-    s = shutdown_brakelight_bspd_shutdown_pack(BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR, &BRAKELIGHT_BSPD_SHUTDOWN_MSG, 8);
-    return s;
+    return shutdown_brakelight_bspd_shutdown_pack(BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR, &BRAKELIGHT_BSPD_SHUTDOWN_MSG, 8);
 };
 // Update sig: brake_analog_voltage_msb of msg: brakelight_bspd_shutdown
 int set_brakelight_bspd_shutdown_brake_analog_voltage_msb (uint8_t value) {
@@ -63,8 +61,7 @@ int set_brakelight_bspd_shutdown_brake_analog_voltage_msb (uint8_t value) {
     }
     // update the struct and the raw array
     BRAKELIGHT_BSPD_SHUTDOWN_MSG.brake_analog_voltage_msb = value;
-    s = shutdown_brakelight_bspd_shutdown_pack(BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR, &BRAKELIGHT_BSPD_SHUTDOWN_MSG, 8);
-    return s;
+    return shutdown_brakelight_bspd_shutdown_pack(BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR, &BRAKELIGHT_BSPD_SHUTDOWN_MSG, 8);
 };
 // Update sig: brake_analog_voltage_lsb of msg: brakelight_bspd_shutdown
 int set_brakelight_bspd_shutdown_brake_analog_voltage_lsb (uint8_t value) {
@@ -74,8 +71,7 @@ int set_brakelight_bspd_shutdown_brake_analog_voltage_lsb (uint8_t value) {
     }
     // update the struct and the raw array
     BRAKELIGHT_BSPD_SHUTDOWN_MSG.brake_analog_voltage_lsb = value;
-    s = shutdown_brakelight_bspd_shutdown_pack(BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR, &BRAKELIGHT_BSPD_SHUTDOWN_MSG, 8);
-    return s;
+    return shutdown_brakelight_bspd_shutdown_pack(BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR, &BRAKELIGHT_BSPD_SHUTDOWN_MSG, 8);
 };
 // Update sig: brake_gate of msg: brakelight_bspd_shutdown
 int set_brakelight_bspd_shutdown_brake_gate (uint8_t value) {
@@ -85,8 +81,7 @@ int set_brakelight_bspd_shutdown_brake_gate (uint8_t value) {
     }
     // update the struct and the raw array
     BRAKELIGHT_BSPD_SHUTDOWN_MSG.brake_gate = value;
-    s = shutdown_brakelight_bspd_shutdown_pack(BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR, &BRAKELIGHT_BSPD_SHUTDOWN_MSG, 8);
-    return s;
+    return shutdown_brakelight_bspd_shutdown_pack(BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR, &BRAKELIGHT_BSPD_SHUTDOWN_MSG, 8);
 };
 // Update sig: bspdsense of msg: brakelight_bspd_shutdown
 int set_brakelight_bspd_shutdown_bspdsense (uint8_t value) {
@@ -96,7 +91,6 @@ int set_brakelight_bspd_shutdown_bspdsense (uint8_t value) {
     }
     // update the struct and the raw array
     BRAKELIGHT_BSPD_SHUTDOWN_MSG.bspdsense = value;
-    s = shutdown_brakelight_bspd_shutdown_pack(BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR, &BRAKELIGHT_BSPD_SHUTDOWN_MSG, 8);
-    return s;
+    return shutdown_brakelight_bspd_shutdown_pack(BRAKELIGHT_BSPD_SHUTDOWN_RAW_ARR, &BRAKELIGHT_BSPD_SHUTDOWN_MSG, 8);
 };
 

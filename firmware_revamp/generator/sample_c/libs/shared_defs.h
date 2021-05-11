@@ -1,4 +1,6 @@
 #include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
 
 /* Struct holding all information necessary to send a CAN message */
 typedef struct can_msg_info {
@@ -14,8 +16,8 @@ typedef struct can_msg_info {
     uint16_t ident; 
     //byte length of message
     uint8_t length;
-};
+} msg_info;
 
 /* CAN ARRAY FOR ALL MESSAGES, SHARED WITH can_api.c */
-const can_msg_info* CAN_msg_array;
-const int CAN_info_len;
+msg_info** CAN_msg_array;
+int CAN_info_len;

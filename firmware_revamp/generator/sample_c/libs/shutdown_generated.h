@@ -1,4 +1,3 @@
-#include "shared_defs.h"
 #include "can_api.h"
 #include "shutdown.h"
 

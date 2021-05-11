@@ -8,4 +8,4 @@
         .ident = {msg_id},
         .length = {msg_length},
     }};
-    can_info_arr[{i}] = &MESSAGE;
+    CAN_msg_array[{i}] = &MESSAGE;

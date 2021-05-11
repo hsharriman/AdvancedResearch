@@ -1,7 +1,7 @@
 // Update sig: {sig} of msg: {msg}
 int set_{msg}_{sig} (uint8_t value) {{
     //check that it is a legal value
-    if ({prefix}_{msg}_{sig}_is_in_range(value) == 0) {{
+    if (!{prefix}_{msg}_{sig}_is_in_range(value)) {{
         return 0;
     }}
     // update the struct and the raw array

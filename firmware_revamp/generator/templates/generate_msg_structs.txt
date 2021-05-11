@@ -1,8 +1,6 @@
-struct {struct_type} {struct_name};
-######
-    // {struct_name}
-    {struct_name} = {{
+// {struct_name}
+struct {struct_type} {struct_name} = {{
 {signals}
-    }};
+}};
 ######
-        .{signal} = OxFF,
+    .{signal} = 0x00,

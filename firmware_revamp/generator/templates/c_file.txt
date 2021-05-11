@@ -8,17 +8,15 @@
 
 /* BOARD-SPECIFIC CAN FUNCTIONALITY. */
 void {prefix}_CAN_init() {{
-    // Initialize each struct as empty
-{structs}
     // Allocate array of structs that will be shared with can_api
-    CAN_msg_array = malloc(sizeof(can_msg_info*) * {NUM_MSGS});
+    CAN_msg_array = malloc(sizeof(msg_info*) * {NUM_MSGS});
     CAN_info_len = {NUM_MSGS};
 
     // Add one struct per TX messsage
 {can_arr}
 
     // Call can_api init
-    CAN_init(mode);
+    CAN_init({mode});
 
     initTimer();
 }}
